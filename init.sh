@@ -15,20 +15,20 @@ instance_id=$(curl -s 169.254.169.254/latest/meta-data/instance-id)
 ip=$(curl -s 169.254.169.254/latest/meta-data/public-ipv4)
 
 # update install
-sudo apt update
-sudo apt install -y python3-pip
-sudo pip3 install awscli
+apt update
+apt install -y python3-pip
+pip3 install awscli
 
 # mount ebs volume
-sudo aws ec2 attach-volume --volume-id $volume_id --instance-id $instance_id --device /dev/xvdb --region $region
+aws ec2 attach-volume --volume-id $volume_id --instance-id $instance_id --device /dev/xvdb --region $region
 aws ec2 wait volume-in-use --volume-ids $volume_id
 until [ -e /dev/nvme1n1 ]; do
     sleep 1
 done
-sudo mkdir /home/$username
-# sudo mkfs -t ext4 /dev/nvme1n1
-sudo mount /dev/nvme1n1 /home/$username
-sudo useradd -u $userid -d /home/$username $username
+mkdir /home/$username
+# mkfs -t ext4 /dev/nvme1n1
+mount /dev/nvme1n1 /home/$username
+useradd -u $userid -d /home/$username $username
 
 # register route53
 curl https://raw.githubusercontent.com/motojouya/ec2-develop/master/dyndns.tmpl -O
