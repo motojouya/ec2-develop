@@ -7,9 +7,10 @@ export AWS_DEFAULT_REGION=ap-northeast-1
 region=$1
 userid=$2
 username=$3
-hosted_zone_id=$4
-domain=$5
-volume_id=$6
+ssh_port=$4
+hosted_zone_id=$5
+domain=$6
+volume_id=$7
 
 instance_id=$(curl -s 169.254.169.254/latest/meta-data/instance-id)
 ip=$(curl -s 169.254.169.254/latest/meta-data/public-ipv4)
@@ -28,10 +29,19 @@ done
 mkdir /home/$username
 # mkfs -t ext4 /dev/nvme1n1
 mount /dev/nvme1n1 /home/$username
-useradd -u $userid -d /home/$username $username
+useradd -u $userid -d /home/$username -s /bin/bash $username
+gpasswd -a $username sudo
+cp -arpf /home/ec2-user/.ssh /home/$username/
+chown -R $username /home/$username/.ssh
+# userdel -r ubuntu
 
 # register route53
 curl https://raw.githubusercontent.com/motojouya/ec2-develop/master/dyndns.tmpl -O
 sed -e "s/{%IP%}/$ip/g;s/{%domain%}/$domain/g" dyndns.tmpl > change_resource_record_sets.json
 aws route53 change-resource-record-sets --hosted-zone-id $hosted_zone_id --change-batch file:///change_resource_record_sets.json
+
+# ssh config
+curl https://raw.githubusercontent.com/motojouya/ec2-develop/master/sshd_config -O
+sed -e s/{%port%}/$ssh_port/g sshd_config > /etc/ssh/sshd_config
+systemctl restart sshd
 
