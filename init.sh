@@ -41,7 +41,8 @@ sed -e "s/{%IP%}/$ip/g;s/{%domain%}/$domain/g" dyndns.tmpl > change_resource_rec
 aws route53 change-resource-record-sets --hosted-zone-id $hosted_zone_id --change-batch file:///change_resource_record_sets.json
 
 # ssh config
-curl https://raw.githubusercontent.com/motojouya/ec2-develop/master/sshd_config -O
-sed -e s/{%port%}/$ssh_port/g sshd_config > /etc/ssh/sshd_config
+curl https://raw.githubusercontent.com/motojouya/ec2-develop/master/sshd_config.tmpl -O
+sed -e s/{%port%}/$ssh_port/g sshd_config.tmpl > sshd_config.init
+cp sshd_config.init /etc/ssh/sshd_config
 systemctl restart sshd
 
