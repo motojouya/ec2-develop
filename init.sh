@@ -33,5 +33,5 @@ useradd -u $userid -d /home/$username $username
 # register route53
 curl https://raw.githubusercontent.com/motojouya/ec2-develop/master/dyndns.tmpl -O
 sed -e "s/{%IP%}/$ip/g;s/{%domain%}/$domain/g" dyndns.tmpl > change_resource_record_sets.json
-aws route53 change-resource-record-sets --hosted-zone-id $hosted_zone_id --change-batch file:///home/ubuntu/change_resource_record_sets.json
+aws route53 change-resource-record-sets --hosted-zone-id $hosted_zone_id --change-batch file:///change_resource_record_sets.json
 
