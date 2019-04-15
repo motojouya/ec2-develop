@@ -19,6 +19,7 @@ ip=$(curl -s 169.254.169.254/latest/meta-data/public-ipv4)
 # update install
 apt update
 apt install -y python3-pip
+apt install -y neovim
 pip3 install awscli
 
 # mount ebs volume
@@ -33,7 +34,8 @@ mount /dev/nvme1n1 /home/$username
 useradd -u $userid -d /home/$username -s /bin/bash $username
 gpasswd -a $username sudo
 cp -arpf /home/ubuntu/.ssh /home/$username/
-chown -R $username /home/$username/.ssh
+chown -R $username /home/$username
+chgrp -R $username /home/$username
 echo "$username:$password" | chpasswd
 userdel -r ubuntu
 
