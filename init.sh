@@ -31,7 +31,7 @@ mkdir /home/$username
 mount /dev/nvme1n1 /home/$username
 useradd -u $userid -d /home/$username -s /bin/bash $username
 gpasswd -a $username sudo
-cp -arpf /home/ec2-user/.ssh /home/$username/
+cp -arpf /home/ubuntu/.ssh /home/$username/
 chown -R $username /home/$username/.ssh
 # userdel -r ubuntu
 
