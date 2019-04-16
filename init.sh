@@ -16,6 +16,8 @@ volume_id=$8
 instance_id=$(curl -s 169.254.169.254/latest/meta-data/instance-id)
 ip=$(curl -s 169.254.169.254/latest/meta-data/public-ipv4)
 
+cd /home/ubuntu
+
 # update install
 apt update
 apt install -y python3-pip
@@ -31,22 +33,28 @@ done
 mkdir /home/$username
 # mkfs -t ext4 /dev/nvme1n1
 mount /dev/nvme1n1 /home/$username
+
+# add user
 useradd -u $userid -d /home/$username -s /bin/bash $username
 gpasswd -a $username sudo
 cp -arpf /home/ubuntu/.ssh /home/$username/
-chown -R $username /home/$username
-chgrp -R $username /home/$username
+chown $username /home/$username
+chgrp $username /home/$username
+chown -R $username /home/$username/.ssh
+chgrp -R $username /home/$username/.ssh
 echo "$username:$password" | chpasswd
-userdel -r ubuntu
 
 # register route53
 curl https://raw.githubusercontent.com/motojouya/ec2-develop/master/dyndns.tmpl -O
 sed -e "s/{%IP%}/$ip/g;s/{%domain%}/$domain/g" dyndns.tmpl > change_resource_record_sets.json
-aws route53 change-resource-record-sets --hosted-zone-id $hosted_zone_id --change-batch file:///change_resource_record_sets.json
+aws route53 change-resource-record-sets --hosted-zone-id $hosted_zone_id --change-batch file:///home/ubuntu/change_resource_record_sets.json
 
 # ssh config
 curl https://raw.githubusercontent.com/motojouya/ec2-develop/master/sshd_config.tmpl -O
 sed -e s/{%port%}/$ssh_port/g sshd_config.tmpl > sshd_config.init
 cp sshd_config.init /etc/ssh/sshd_config
 systemctl restart sshd
+
+cd /
+userdel -r ubuntu
 
