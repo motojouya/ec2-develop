@@ -85,8 +85,9 @@ chmod +x /usr/local/bin/docker-compose
 gpasswd -a $username docker
 systemctl restart docker
 
-# install vim
+# install others
 apt install -y neovim
+apt install -y jq
 
 cd /
 userdel -r ubuntu
