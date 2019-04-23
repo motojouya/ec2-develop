@@ -62,6 +62,8 @@ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 apt update
 apt install -y yarn
+npm install -g npx
+yarn global add create-react-app
 
 # install docker
 sudo apt install -y \
