@@ -87,77 +87,27 @@ chmod +x /usr/local/bin/docker-compose
 gpasswd -a $username docker
 systemctl restart docker
 
-# install nginx
-# https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx
+# install nginx and certbot for let's encrypt
+cp /home/$user/letsencrypt.tar.gz letsencrypt.tar.gz
+cd /etc
+tar xzf letsencrypt.tar.gz
+cd /home/ubuntu
+
 apt install -y nginx
+curl https://raw.githubusercontent.com/motojouya/ec2-develop/master/http.conf.tmpl -O
+sed -e s/{%domain%}/$domain/g http.conf.tmpl > http.conf
+cp http.conf /etc/nginx/conf.d/http.conf
+
 apt install -y software-properties-common
 add-apt-repository -y universe
 add-apt-repository -y ppa:certbot/certbot
 apt update
 apt install -y certbot python-certbot-nginx
 
-cp /home/$user/letsencrypt.tar.gz
-tar xzf letsencrypt.tar.gz
-cd /etc/letsencrypt/live/$domain
-ln -s ../../archive/$domain/cert1.pem cert.pem
-ln -s ../../archive/$domain/chain1.pem chain.pem
-ln -s ../../archive/$domain/fullchain1.pem fullchain.pem
-ln -s ../../archive/$domain/privkey1.pem privkey.pem
-
-# certbot certonly --standalone -d motojouya-devdev.tk -m motojouya@gmail.com --agree-tos -n --dry-run
-
-# before /etc/letsencrypt/cli.ini
-# # Because we are using logrotate for greater flexibility, disable the
-# # internal certbot logrotation.
-# max-log-backups = 0
-
-# m$ sudo tree /etc/letsencrypt/
-# /etc/letsencrypt/
-# ├── accounts
-# │   └── acme-v02.api.letsencrypt.org
-# │       └── directory
-# │           └── afadd590502fee53a5a38f5c6822425e
-# │               ├── meta.json
-# │               ├── private_key.json
-# │               └── regr.json
-# ├── archive
-# │   └── motojouya-devdev.tk
-# │       ├── cert1.pem
-# │       ├── chain1.pem
-# │       ├── fullchain1.pem
-# │       └── privkey1.pem
-# ├── cli.ini
-# ├── csr
-# │   ├── 0000_csr-certbot.pem
-# │   ├── 0001_csr-certbot.pem
-# │   ├── 0002_csr-certbot.pem
-# │   ├── 0003_csr-certbot.pem
-# │   └── 0004_csr-certbot.pem
-# ├── keys
-# │   ├── 0000_key-certbot.pem
-# │   ├── 0001_key-certbot.pem
-# │   ├── 0002_key-certbot.pem
-# │   ├── 0003_key-certbot.pem
-# │   └── 0004_key-certbot.pem
-# ├── live
-# │   ├── README
-# │   └── motojouya-devdev.tk
-# │       ├── README
-# │       ├── cert.pem -> ../../archive/motojouya-devdev.tk/cert1.pem
-# │       ├── chain.pem -> ../../archive/motojouya-devdev.tk/chain1.pem
-# │       ├── fullchain.pem -> ../../archive/motojouya-devdev.tk/fullchain1.pem
-# │       └── privkey.pem -> ../../archive/motojouya-devdev.tk/privkey1.pem
-# ├── renewal
-# │   └── motojouya-devdev.tk.conf
-# └── renewal-hooks
-#     ├── deploy
-#     ├── post
-#     └── pre
-
 # install others
 apt install -y neovim
 apt install -y jq
-apt  install -y tree
+apt install -y tree
 
 cd /
 userdel -r ubuntu
