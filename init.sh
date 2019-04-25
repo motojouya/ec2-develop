@@ -87,9 +87,27 @@ chmod +x /usr/local/bin/docker-compose
 gpasswd -a $username docker
 systemctl restart docker
 
+# install nginx and certbot for let's encrypt
+cp /home/$user/letsencrypt.tar.gz letsencrypt.tar.gz
+cd /etc
+tar xzf letsencrypt.tar.gz
+cd /home/ubuntu
+
+apt install -y nginx
+curl https://raw.githubusercontent.com/motojouya/ec2-develop/master/http.conf.tmpl -O
+sed -e s/{%domain%}/$domain/g http.conf.tmpl > http.conf
+cp http.conf /etc/nginx/conf.d/http.conf
+
+apt install -y software-properties-common
+add-apt-repository -y universe
+add-apt-repository -y ppa:certbot/certbot
+apt update
+apt install -y certbot python-certbot-nginx
+
 # install others
 apt install -y neovim
 apt install -y jq
+apt install -y tree
 
 cd /
 userdel -r ubuntu
