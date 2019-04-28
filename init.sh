@@ -88,8 +88,8 @@ gpasswd -a $username docker
 systemctl restart docker
 
 # install nginx and certbot for let's encrypt
-cp /home/$user/letsencrypt.tar.gz letsencrypt.tar.gz
 cd /etc
+cp /home/$user/letsencrypt.tar.gz letsencrypt.tar.gz
 tar xzf letsencrypt.tar.gz
 cd /home/ubuntu
 
