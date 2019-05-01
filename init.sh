@@ -89,7 +89,7 @@ systemctl restart docker
 
 # install nginx and certbot for let's encrypt
 cd /etc
-cp /home/$user/letsencrypt.tar.gz letsencrypt.tar.gz
+cp /home/$username/letsencrypt.tar.gz letsencrypt.tar.gz
 tar xzf letsencrypt.tar.gz
 cd /home/ubuntu
 
