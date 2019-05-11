@@ -114,6 +114,8 @@ apt install -y neovim
 apt install -y jq
 apt install -y tree
 
+git config --global core.editor 'vim -c "set fenc=utf-8"'
+
 cd /
 userdel -r ubuntu
 
