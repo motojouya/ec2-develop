@@ -65,6 +65,7 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 apt update
 apt install -y yarn
 npm install -g npx
+npm install -g typescript typescript-language-server
 yarn global add create-react-app
 
 # install docker
