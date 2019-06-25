@@ -19,10 +19,10 @@ ip=$(curl -s 169.254.169.254/latest/meta-data/public-ipv4)
 cd /home/ubuntu
 
 # install awscli
-DEBIAN_FRONTEND=noninteractive dpkg --configure -a --force-confdef --force-confnew
 cp -p /etc/apt/sources.list /etc/apt/sources.list.bak
 sed -i 's/ap-northeast-1\.ec2\.//g' /etc/apt/sources.list
 apt update
+DEBIAN_FRONTEND=noninteractive dpkg --configure -a --force-confdef --force-confnew
 apt install -y python3-pip
 pip3 install awscli
 
