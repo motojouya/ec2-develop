@@ -22,9 +22,16 @@ cd /home/ubuntu
 cp -p /etc/apt/sources.list /etc/apt/sources.list.bak
 sed -i 's/ap-northeast-1\.ec2\.//g' /etc/apt/sources.list
 apt update
-DEBIAN_FRONTEND=noninteractive dpkg --configure -a --force-confdef --force-confnew
-apt install -y python3-pip
-pip3 install awscli
+apt install -y unzip
+apt install -y python
+# DEBIAN_FRONTEND=noninteractive dpkg --configure -a --force-confdef --force-confnew
+# apt install -y python3-pip
+# pip3 install awscli
+if ! test -e /usr/bin/aws ; then
+  curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/tmp/awscli-bundle.zip"
+  unzip /tmp/awscli-bundle.zip -d /tmp
+  /tmp/awscli-bundle/install -i /usr/lib/aws -b /usr/bin/aws
+fi
 
 # mount ebs volume
 aws ec2 attach-volume --volume-id $volume_id --instance-id $instance_id --device /dev/xvdb --region $region
