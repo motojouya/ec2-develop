@@ -36,12 +36,12 @@ fi
 # mount ebs volume
 aws ec2 attach-volume --volume-id $volume_id --instance-id $instance_id --device /dev/xvdb --region $region
 aws ec2 wait volume-in-use --volume-ids $volume_id
-until [ -e /dev/nvme1n1 ]; do
+until [ -e /dev/nvme2n1 ]; do
     sleep 1
 done
 mkdir /home/$username
-# mkfs -t ext4 /dev/nvme1n1
-mount /dev/nvme1n1 /home/$username
+# mkfs -t ext4 /dev/nvme2n1
+mount /dev/nvme2n1 /home/$username
 
 # add user
 useradd -u $userid -d /home/$username -s /bin/bash $username
