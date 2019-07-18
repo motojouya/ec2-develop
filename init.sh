@@ -42,8 +42,8 @@ until [ -e $device ]; do
     sleep 1
 done
 mkdir /home/$username
-# mkfs -t ext4 /dev/$device
-mount /dev/$device /home/$username
+# mkfs -t ext4 $device
+mount $device /home/$username
 
 # add user
 useradd -u $userid -d /home/$username -s /bin/bash $username
