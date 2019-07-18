@@ -22,6 +22,7 @@ cd /home/ubuntu
 cp -p /etc/apt/sources.list /etc/apt/sources.list.bak
 sed -i 's/ap-northeast-1\.ec2\.//g' /etc/apt/sources.list
 apt update
+apt install nvme-cli
 apt install -y unzip
 apt install -y python
 # DEBIAN_FRONTEND=noninteractive dpkg --configure -a --force-confdef --force-confnew
@@ -34,14 +35,15 @@ if ! test -e /usr/bin/aws ; then
 fi
 
 # mount ebs volume
-aws ec2 attach-volume --volume-id $volume_id --instance-id $instance_id --device /dev/xvdb --region $region
-aws ec2 wait volume-in-use --volume-ids $volume_id
-until [ -e /dev/nvme1n1 ]; do
+aws ec2 attach-volume --volume-id vol-$volume_id --instance-id $instance_id --device /dev/xvdb --region $region
+aws ec2 wait volume-in-use --volume-ids vol-$volume_id
+device=$(nvme list | grep $volume_id | awk '{print $1}')
+until [ -e $device ]; do
     sleep 1
 done
 mkdir /home/$username
-# mkfs -t ext4 /dev/nvme1n1
-mount /dev/nvme1n1 /home/$username
+# mkfs -t ext4 /dev/$device
+mount /dev/$device /home/$username
 
 # add user
 useradd -u $userid -d /home/$username -s /bin/bash $username
