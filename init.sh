@@ -37,10 +37,10 @@ fi
 # mount ebs volume
 aws ec2 attach-volume --volume-id vol-$volume_id --instance-id $instance_id --device /dev/xvdb --region $region
 aws ec2 wait volume-in-use --volume-ids vol-$volume_id
-device=$(nvme list | grep $volume_id | awk '{print $1}')
+device=$(nvme list | grep $volume_id | awk '{print $1}' | xargs)
 until [ -n $device ]; do
     sleep 1
-    device=$(nvme list | grep $volume_id | awk '{print $1}')
+    device=$(nvme list | grep $volume_id | awk '{print $1}' | xargs)
 done
 # until [ -e $device ]; do
 #     sleep 1
